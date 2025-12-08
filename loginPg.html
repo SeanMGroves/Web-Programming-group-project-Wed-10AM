@@ -15,14 +15,31 @@
     </section>
     <div id="formContainer">
         <form id="loginPage" class="visible">
-            <h1>Login</h1>
-            <label for="username">Username or E-mail:</label><br>
-            <input type="text" id="user" name="user" required><br><br>
-    
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password" placeholder="atleast 8 characters" required><br><br>
-            
-            <button type="submit" id="loginBtn">Login</button>
+          <h1>User Login</h1>
+
+ 
+            <label for="trn">TRN</label>
+            <input type="text" id="storedTrn" placeholder="Enter your TRN" required>
+
+            <label for="password">Password</label>
+            <div style="position: relative;">
+                <input type="password" id="storedPassword" placeholder="Enter your password" required>
+                <span id="togglePassword" 
+                    style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">
+                    👁️
+                </span>
+            </div>
+
+            <div class="actions">
+            <button type="button" id="loginBtn">Login</button>
+            <button type="reset">Clear</button>
+            </div>
+
+            <p>
+            Don't have an account?
+            <a href="registerPg.html">Register here</a>
+            </p>
+            <!-- load the script at the end so DOM elements exist -->
             
         </form>
         <button type="button" id="backToLogin" class="hidden">L<br>O<br>G<br>I<br>N</button>
@@ -30,43 +47,104 @@
         <button type="button" id="change">R<br>E<br>G<br>I<br>S<br>T<br>E<br>R</button>
 
         <form id="registerForm" class="hidden">
-            <h1>Register</h1>
+           <h1>User Registration</h1>
+
+
             <label for="firstName">First Name:</label>
-            <input type="text" id="firstName" name="firstName" placeholder="John" required>
-    
-             <label for="lastName">Last Name:</label>
-            <input type="text" id="lastName" name="lastName" placeholder="Doe" required><br><br>
-    
+            <input type="text" id="firstName" name="firstName" required>
+
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" required><br><br>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+            <option value="">--Select--</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+            </select><br><br>
+
+            <label for="phone">phone Number:</label>
+            <input type="tel" id="phone" name="phone" required><br><br>
+
             <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" placeholder="name@email.com" required>
-    
+            <input type="email" id="email" name="email" required>
+
             <label for="dob">Date of Birth:</label>
-            <input type="date" id="dob" name="dob" placeholder="DD/MM/YYYY"><br><br>
-    
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username" required><br><br>
-    
+            <input type="date" id="dob" name="dob" required><br><br>
+
+            <label for="trn">Tax Registration Number (TRN):</label>
+            <input type="text" id="trn" name="trn" placeholder="000-000-000" required><br><br>
+
             <label for="password">Password:</label><br>
-            <input type="password" id="newPassword" name="newPassword" required><br><br>
-    
+            <input type="password" id="password" name="password" required><br><br>
+
             <label for="confirmPass">Confirm Password:</label><br>
             <input type="password" id="confirmPass" name="confirmPass" required><br><br>
-    
-            <button type="submit" id="registerBtn">Register</button>
+
+            <button type="button" id="registerBtn">Register</button>
+            <button type="reset">Cancel</button>
+
+
+
         </form>
         
     </div>
 
     <script src="registerFunction.js"></script>
     <script >
-        const change = document.getElementById('change');
-        const loginBtn = document.getElementById('loginBtn');
-        const loginForm = document.getElementById('loginPage');
-        const register = document.getElementById('registerForm');
-        const backToLogin = document.getElementById('backToLogin');
+     
+            // --- PASSWORD SHOW / HIDE ---
+            const togglePassword = document.getElementById("togglePassword");
+            const passwordField = document.getElementById("storedPassword");
 
+            togglePassword.addEventListener("click", () => {
+                if (passwordField.type === "password") {
+                    passwordField.type = "text";
+                    togglePassword.textContent = "🙈";
+                } else {
+                    passwordField.type = "password";
+                    togglePassword.textContent = "👁️";
+                }
+            });
 
-        change.onclick= function() {
+            // --- LOGIN BUTTON ---
+            const loginBtn = document.getElementById("loginBtn");
+
+            loginBtn.addEventListener("click", function () {
+                const trn = document.getElementById("storedTrn").value.trim();
+                const password = document.getElementById("storedPassword").value.trim();
+
+                // Basic validation
+                if (trn === "" || password === "") {
+                    alert("Please enter both your TRN and password.");
+                    return;
+                }
+
+                // Load registered users
+                const users = JSON.parse(localStorage.getItem("RegistrationData")) || [];
+
+                // Find matching user
+                const foundUser = users.find(u => u.trn === trn && u.password === password);
+
+                if (!foundUser) {
+                    alert("Invalid TRN or Password.");
+                    return;
+                }
+
+                // Login successful — store active user
+                localStorage.setItem("ActiveUser", JSON.stringify(foundUser));
+
+                alert("Login Successful!");
+                window.location.href = "homePg.html";
+            });
+
+            //switching between forms
+            const loginForm = document.getElementById('loginPage');
+            const register = document.getElementById('registerForm');
+            const change = document.getElementById('change');
+
+              change.onclick= function() {
             loginForm.classList.remove("visible");
             loginForm.classList.add("hidden");
             register.classList.remove("hidden");
@@ -75,50 +153,17 @@
             backToLogin.classList.remove("hidden");
         }
 
-         backToLogin.onclick = function() {
-            register.classList.remove("visible");
-            register.classList.add("hidden");
-            loginForm.classList.remove("hidden");
-            loginForm.classList.add("visible");
-            change.classList.remove("hidden");
-            backToLogin.classList.add("hidden");
-        };
+            const backToLogin = document.getElementById('backToLogin');
 
-
-        function stringify(item){
-            return JSON.stringify(item);
-        }
-
-        function getItem(item){
-            return JSON.parse(localStorage.getItem(item));
-        }
-
-        
-
-        function redirect(){
-            window.location.href = "homePg.html";
-        }
-
-        loginForm.addEventListener('submit', function(event){
-            event.preventDefault();
-            const username = document.getElementById('user').value;
-            const password = document.getElementById('password').value;
-            const email = document.getElementById('email').value;
-
-            const storedUser = getItem("username");
-            const storedEmail=getItem("email");
-            const storedPassword=getItem("password");
-
-            if((storedUser===username || storedEmail===username) && storedPassword === password){
-                alert('Login successful!');
-                redirect();
-            } else {
-                alert('Invalid username or password.');
+            backToLogin.onclick = function() {
+                register.classList.remove("visible");
+                register.classList.add("hidden");
+                loginForm.classList.remove("hidden");
+                loginForm.classList.add("visible");
+                change.classList.remove("hidden");
+                backToLogin.classList.add("hidden");
             }
 
-            const user= JSON.parse(localStorage.getItem('username'));
-            sessionStorage.setItem('currentUser', user);
-        });
 
        
     </script>

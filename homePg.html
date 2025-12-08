@@ -75,47 +75,51 @@
 
     <script>
 
-       function checkLoginStatus(){
-           
-            let currentUser = sessionStorage.getItem('currentUser');
-            const cart = JSON.parse(localStorage.getItem('cart')) || [];
-            const greeting = document.getElementById('greeting');
-            const loginBtn = document.getElementById('loginBtn');
-            const dropdown = document.querySelector('.dropdown');
+       function checkLoginStatus() {
+            const activeUser = JSON.parse(localStorage.getItem("ActiveUser"));
+            const greeting = document.getElementById("greeting");
+            const loginBtn = document.getElementById("loginBtn");
+            const dropdown = document.querySelector(".dropdown");
 
-            if (currentUser) {
-                greeting.textContent = `Welcome, ${currentUser}!`;
-                loginBtn.style.display = 'none';
-                dropdown.style.display = 'inline-block';
+            if (activeUser) {
+                // Show user name
+                greeting.textContent = `Welcome, ${activeUser.firstName}!`;
+
+                // Hide login button
+                loginBtn.style.display = "none";
+
+                // Show dropdown
+                dropdown.style.display = "inline-block";
             } else {
-                greeting.textContent = '';
-                loginBtn.style.display = 'inline-block';
-                dropdown.style.display = 'none';
+                // Not logged in
+                greeting.textContent = "";
+
+                loginBtn.style.display = "inline-block";
+                dropdown.style.display = "none";
             }
         }
 
-        function logout() {
-            sessionStorage.removeItem('currentUser');
-            alert('You have been logged out.');
-            checkLoginStatus();
+
+       function logout() {
+            localStorage.removeItem("ActiveUser");
+            alert("You have been logged out.");
+            window.location.reload();
         }
 
-         function updateCartCount(count){
-            const cartCount = document.getElementById('cartCount');
-            
-            if(cartCount){
-                cartCount.textContent= count;
+        function updateCartCount(count) {
+            const cartCount = document.getElementById("cartCount");
 
-                if(count ===0){
-                    cartCount.style.display = 'none';
-                    cartCount.classList.add = 'hidden';
-                }else{
-                    cartCount.style.display = 'block';
-                    cartCount.classList.remove = 'hidden';
-                }
+            if (!cartCount) return;
+
+            if (count === 0) {
+                cartCount.style.display = "none";
+                cartCount.classList.add("hidden");
+            } else {
+                cartCount.textContent = count;
+                cartCount.style.display = "inline-block";
+                cartCount.classList.remove("hidden");
             }
         }
-
 
         window.onload = function(){
             const cart = JSON.parse(localStorage.getItem('cart')) || [];

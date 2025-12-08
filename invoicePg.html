@@ -53,7 +53,7 @@
                 </div>
             </div>
         </section>
-
+        <button onclick="printInvoice()" id="printBtn" >Print Invoice</button>
     </main>
 
     <script>
@@ -71,27 +71,35 @@
         const addressLine = document.getElementById('addressDiv');
         const itemsList = document.getElementById('itemsList')
 
-        function checkLoginStatus(){
-            let currentUser = sessionStorage.getItem('currentUser');
-            const greeting = document.getElementById('greeting');
-            const loginBtn = document.getElementById('loginBtn');
-            const dropdown = document.querySelector('.dropdown');
+        function checkLoginStatus() {
+            const activeUser = JSON.parse(localStorage.getItem("ActiveUser"));
+            const greeting = document.getElementById("greeting");
+            const loginBtn = document.getElementById("loginBtn");
+            const dropdown = document.querySelector(".dropdown");
 
-            if (currentUser) {
-                greeting.textContent = `Hello, ${currentUser}!`;
-                loginBtn.style.display = 'none';
-                dropdown.style.display = 'inline-block';
+            if (activeUser) {
+                // Show user name
+                greeting.textContent = `Welcome, ${activeUser.firstName}!`;
+
+                // Hide login button
+                loginBtn.style.display = "none";
+
+                // Show dropdown
+                dropdown.style.display = "inline-block";
             } else {
-                greeting.textContent = '';
-                loginBtn.style.display = 'inline-block';
-                dropdown.style.display = 'none';
+                // Not logged in
+                greeting.textContent = "";
+
+                loginBtn.style.display = "inline-block";
+                dropdown.style.display = "none";
             }
         }
 
-         function logout() {
-            sessionStorage.removeItem('currentUser');
-            alert('You have been logged out.');
-            checkLoginStatus();
+
+       function logout() {
+            localStorage.removeItem("ActiveUser");
+            alert("You have been logged out.");
+            window.location.reload();
         }
 
         function displayCustomerInfo(){
@@ -140,17 +148,58 @@
                 itemsList.appendChild(newTableRow);
             });
            
-            const total = parseInt(sessionStorage.getItem('total'));
-            const totalRow = document.createElement('tr');
-            total.id = 'total';
+            const subTotal = parseInt(sessionStorage.getItem('subTotal'));
+            const tax = parseInt(sessionStorage.getItem('salesTax'));
+            const total = parseInt(sessionStorage.getItem('grandTotal'));
+            
+            const subTotalRow= document.createElement('tr');
+            subTotal.id = 'subTotal';
+            subTotalRow.innerHTML = ` 
+                <td class ="noBorder"></td>
+                <td class ="noBorder"></td>
+                <td id="subTotalDisplay"><strong>Sub-Total: $${subTotal.toFixed(2)}</strong></td>
+    
+            `;
+
+             const taxRow= document.createElement('tr');
+            taxRow.id = 'tax';
+            taxRow.innerHTML = ` 
+                <td class ="noBorder"></td>
+                <td class ="noBorder"></td>
+                <td id="taxDisplay"><strong>Tax: $${tax.toFixed(2)}</strong></td>
+    
+            `;
+        
+             const totalRow= document.createElement('tr');
+            totalRow.id = 'subTotal';
             totalRow.innerHTML = ` 
                 <td class ="noBorder"></td>
                 <td class ="noBorder"></td>
                 <td id="totalDisplay"><strong>Total: $${total.toFixed(2)}</strong></td>
+    
             `;
-            itemsList.appendChild(totalRow);
+            
+            
+            
+            
+        itemsList.appendChild(subTotalRow);
+        itemsList.appendChild(taxRow);
+        itemsList.appendChild(totalRow);
         }
 
+
+        const invoiceSection = document.getElementById("invoiceSection");
+
+        function printInvoice() {
+            const printContents = invoiceSection.innerHTML;
+            const originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+
+            location.reload(); // restore JS functionality
+        }
 
 
         window.onload = function(){

@@ -4,27 +4,35 @@ localStorage.getItem('cart');
         const cartSummarySection = document.getElementById('cartSummary');
         let totalAmount = 0;
 
-        function checkLoginStatus(){
-            let currentUser = sessionStorage.getItem('currentUser');
-            const greeting = document.getElementById('greeting');
-            const loginBtn = document.getElementById('loginBtn');
-            const dropdown = document.querySelector('.dropdown');
+        function checkLoginStatus() {
+            const activeUser = JSON.parse(localStorage.getItem("ActiveUser"));
+            const greeting = document.getElementById("greeting");
+            const loginBtn = document.getElementById("loginBtn");
+            const dropdown = document.querySelector(".dropdown");
 
-            if (currentUser) {
-                greeting.textContent = `Hello, ${currentUser}!`;
-                loginBtn.style.display = 'none';
-                dropdown.style.display = 'inline-block';
+            if (activeUser) {
+                // Show user name
+                greeting.textContent = `Welcome, ${activeUser.firstName}!`;
+
+                // Hide login button
+                loginBtn.style.display = "none";
+
+                // Show dropdown
+                dropdown.style.display = "inline-block";
             } else {
-                greeting.textContent = '';
-                loginBtn.style.display = 'inline-block';
-                dropdown.style.display = 'none';
+                // Not logged in
+                greeting.textContent = "";
+
+                loginBtn.style.display = "inline-block";
+                dropdown.style.display = "none";
             }
         }
 
-         function logout() {
-            sessionStorage.removeItem('currentUser');
-            alert('You have been logged out.');
-            checkLoginStatus();
+
+       function logout() {
+            localStorage.removeItem("ActiveUser");
+            alert("You have been logged out.");
+            window.location.reload();
         }
 
 
@@ -62,11 +70,18 @@ localStorage.getItem('cart');
             cartItemsDiv.appendChild(cartItemDiv);
         });
 
+        let salesTax = totalAmount * 0.15;
+        sessionStorage.setItem('salesTax', JSON.stringify(salesTax));
+        let grandTotal = totalAmount + salesTax;
+        sessionStorage.setItem('grandTotal', JSON.stringify(grandTotal));
+
         const totalDiv = document.createElement('div');
         totalDiv.id = 'checkoutTotal';
         totalDiv.innerHTML = `
             <hr>
-            <h2>Total Amount: $${totalAmount.toFixed(2)}</h2>
+            <h2>Sub-Total: $${totalAmount.toFixed(2)}</h2>
+            <h2>Sales Tax: $${salesTax.toFixed(2)}</h2>
+            <h2>Total: $${grandTotal.toFixed(2)}</h2>
         `;
         cartItemsDiv.appendChild(totalDiv);
     }
@@ -134,10 +149,6 @@ localStorage.getItem('cart');
           window.onload = function() {
             console.log('Loading cart page...');
             console.log('Current cart:', cart);
-            //cart.forEach(watch => {
-                //const cartItemDiv = createCartItem(watch);
-              //  cartItemsDiv.appendChild(cartItemDiv);
-           // });
            updateCartCount(cart.length);
             checkLoginStatus();
             displayCart();

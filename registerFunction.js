@@ -1,87 +1,126 @@
-const firstName=document.getElementById('firstName');
-const lastName=document.getElementById('lastName');
-const email=document.getElementById('email');
-const dob=document.getElementById('dob');
-const username=document.getElementById('username');
-const password=document.getElementById('newPassword');
-const confirmPass=document.getElementById('confirmPass');
-const registerForm=document.getElementById('registerForm');
+const firstName = document.getElementById('firstName');
+const lastName = document.getElementById('lastName');
+const email = document.getElementById('email');
+const gender = document.getElementById('gender');
+const dob = document.getElementById('dob');
+const trn = document.getElementById('trn');
+const phone = document.getElementById('phone');
+const password = document.getElementById('password');
+const confirmPass = document.getElementById('confirmPass');
+const registerForm = document.getElementById('registerForm');
 const registerBtn = document.getElementById('registerBtn');
 
-
-function stringify(item){
-    return JSON.stringify(item);
+function calculateAge(dobValue) {
+    const birthDate = new Date(dobValue);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+    return age;
 }
 
-function registerUser(){
-    const firstNameValue=firstName.value.trim();
-    const lastNameValue=lastName.value.trim();
-    const emailValue=email.value.trim();
-    const dobValue=dob.value;
-    const usernameValue=username.value.trim();
-    const passwordValue=password.value.trim();
-    const confirmPassValue=confirmPass.value.trim();
+function registerUser() {
 
-    localStorage.setItem('firstName', stringify(firstNameValue));
-    localStorage.setItem('lastName', stringify(lastNameValue));
-    localStorage.setItem('email', stringify(emailValue));
-    localStorage.setItem('dob', stringify(dobValue));
-    localStorage.setItem('username', stringify(usernameValue));
-    localStorage.setItem('password', stringify(passwordValue));
-    localStorage.setItem('confirmPass', stringify(confirmPassValue));
+    const newUser = {
+        firstName: firstName.value.trim(),
+        lastName: lastName.value.trim(),
+        email: email.value.trim(),
+        gender: gender.value,
+        phone: phone.value.trim(),
+        dob: dob.value,
+        trn: trn.value.trim(), 
+        password: password.value.trim(),
+        dateRegistered: new Date().toISOString(),
+        cart: {},
+        invoices: []
+    };
+
+    let users = JSON.parse(localStorage.getItem("RegistrationData")) || [];
+
+    // unique TRN
+    if (users.some(u => u.trn === newUser.trn)) {
+        alert("This TRN is already registered.");
+        return false;
+    }
+
+    // unique email
+    if (users.some(u => u.email === newUser.email)) {
+        alert("This email is already registered.");
+        return false;
+    }
+
+    users.push(newUser);
+    localStorage.setItem("RegistrationData", JSON.stringify(users));
+    return true;
 }
 
-function checkInputs(){
-    let complete=true;
-    const firstNameValue=firstName.value.trim();
-    const lastNameValue=lastName.value.trim();
-    const emailValue=email.value.trim();
-    const dobValue=dob.value;
-    const usernameValue=username.value.trim();
-    const passwordValue=password.value.trim();
-    const confirmPassValue=confirmPass.value.trim();
+function checkInputs() {
 
-    if (firstNameValue===''){
-        complete=false;
+    // empty check
+    if (
+        firstName.value.trim() === "" ||
+        lastName.value.trim() === "" ||
+        email.value.trim() === "" ||
+        gender.value === "" ||
+        phone.value.trim() === "" ||
+        dob.value === "" ||
+        trn.value.trim() === "" ||
+        password.value.trim() === "" ||
+        confirmPass.value.trim() === ""
+    ) {
+        alert("All fields must be filled out.");
+        return false;
     }
 
-    if (lastNameValue===''){
-        complete=false;
+    // password length
+    if (password.value.length < 8) {
+        alert("Password must be at least 8 characters.");
+        return false;
     }
-    if (emailValue===''){
-        complete=false;
+
+    // password match
+    if (password.value !== confirmPass.value) {
+        alert("Passwords do not match.");
+        return false;
     }
-    if (dobValue===''){
-        complete=false;
+
+    // email format
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email.value.trim())) {
+        alert("Invalid email format.");
+        return false;
     }
-    if (usernameValue===''){
-        complete=false;
+
+    // age check
+    if (calculateAge(dob.value) < 18) {
+        alert("You must be at least 18 years old.");
+        return false;
     }
-    if (passwordValue===''){
-        complete=false;
+
+    // TRN format 000-000-000
+    const trnPattern = /^\d{3}-\d{3}-\d{3}$/;
+    if (!trnPattern.test(trn.value.trim())) {
+        alert("TRN must be in the format 000-000-000.");
+        return false;
     }
-    if (confirmPassValue===''){
-        complete=false;
-    }else if (passwordValue!==confirmPassValue){
-        complete=false;
-         alert('Passwords do not match.');
-    }
-    return complete;
+
+    return true;
 }
 
- function redirect(){
-            window.location.href = "loginPg.html";
-        }
-
+function redirect() {
+    window.location.href = "loginPg.html";
+}
 
 registerBtn.addEventListener('click', function(event){
     event.preventDefault();
-    if (checkInputs()){
-        registerUser();
-        alert('Registration Successful!');
+
+    if (!checkInputs()) return;
+
+    if (registerUser()) {
+        alert("Registration Successful!");
         registerForm.reset();
         redirect();
-    } else {
-        alert('Please fill in all fields correctly.');
     }
 });

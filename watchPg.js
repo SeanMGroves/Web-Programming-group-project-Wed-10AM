@@ -1,26 +1,33 @@
-  function checkLoginStatus(){
-           
-            let currentUser = sessionStorage.getItem('currentUser');
+  function checkLoginStatus() {
+            const activeUser = JSON.parse(localStorage.getItem("ActiveUser"));
+            const greeting = document.getElementById("greeting");
+            const loginBtn = document.getElementById("loginBtn");
+            const dropdown = document.querySelector(".dropdown");
 
-            const greeting = document.getElementById('greeting');
-            const loginBtn = document.getElementById('loginBtn');
-            const dropdown = document.querySelector('.dropdown');
+            if (activeUser) {
+                // Show user name
+                greeting.textContent = `Welcome, ${activeUser.firstName}!`;
 
-            if (currentUser) {
-                greeting.textContent = `Hello, ${currentUser}!`;
-                loginBtn.style.display = 'none';
-                dropdown.style.display = 'inline-block';
+                // Hide login button
+                loginBtn.style.display = "none";
+
+                // Show dropdown
+                dropdown.style.display = "inline-block";
             } else {
-                greeting.textContent = '';
-                loginBtn.style.display = 'inline-block';
-                dropdown.style.display = 'none';
+                // Not logged in
+                greeting.textContent = "";
+
+                loginBtn.style.display = "inline-block";
+                dropdown.style.display = "none";
             }
         }
-    function logout() {
-                sessionStorage.removeItem('currentUser');
-                alert('You have been logged out.');
-                checkLoginStatus();
-            }
+
+     function logout() {
+            localStorage.removeItem("ActiveUser");
+            alert("You have been logged out.");
+            window.location.reload();
+        }
+
 
         window.onload = checkLoginStatus;
  
@@ -54,7 +61,7 @@
         {id:6,brand:"Breitling",model:"Navitimer",price:20000,description:"A pilot's watch with advanced features and a distinctive design.",stock:0,imgURL:"Assets/navitimer.jpg",quantity:1}
         ];
         
-
+        localStorage.setItem("allProducts", JSON.stringify(watchInventory));
         let cart = [];
         const addToCartButtons = document.querySelectorAll('.addBtn');
 
@@ -75,7 +82,24 @@
                 if(duplicateCheck(watch)){
                     alert(`${watch.model} is already in the cart.`);
                 }else{
-                    cart.push(watch);
+                    // calculate tax, discount, subtotal, total
+                    const taxRate = 0.15; // 15%
+                    const discountRate = 0.10; // 10%
+
+                    const tax = watch.price * taxRate;
+                    const discount = watch.price * discountRate;
+                    const subtotal = watch.price;
+                    const total = subtotal + tax - discount;
+
+                    const cartItem = {
+                    ...watch,
+                    tax: tax.toFixed(2),
+                    discount: discount.toFixed(2),
+                    subtotal: subtotal.toFixed(2),
+                    total: total.toFixed(2)
+                    };
+
+                    cart.push(cartItem);
                     alert(`Added ${watch.model} to cart. Total items in cart: ${cart.length}`);
                     console.log(`Added ${watch.model} to cart.`);
                     console.log(cart);
@@ -105,7 +129,7 @@
         
         //filtering functionality 
         const filterOptions = document.querySelectorAll(".filterOption");
-const watchItems = document.querySelectorAll(".watchItem");
+        const watchItems = document.querySelectorAll(".watchItem");
 
 filterOptions.forEach(option => {
     option.addEventListener("change", filterWatches);

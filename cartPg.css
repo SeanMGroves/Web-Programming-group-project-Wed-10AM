@@ -305,12 +305,14 @@ input:focus {
     max-width: 300px;
 }
 
+
 #invoiceBody{
     display: flex;
     justify-content: center;
     background-color: #f7f7f7;
     padding: 30px;
 }
+
 
 #itemsList{
     text-align: center;
@@ -332,6 +334,18 @@ th,td{
 .noBorder{
     border: none;
 }
+
+#printBtn{
+    margin: 50px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #988141;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 
 
 footer{

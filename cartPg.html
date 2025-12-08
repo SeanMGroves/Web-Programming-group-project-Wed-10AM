@@ -33,22 +33,13 @@
 
         <section id="cartSection">
             <h2>Your Shopping Cart</h2>
+            <button onclick="clearAllItems()" id="clearAllBtn">Clear All</button>
+            <button onclick="exitCartPage()" id="exitBtn">Leave Cart</button>
+
             <div id="cartItems">
                 <p id="empty"></p>
                 <!-- Cart items will be dynamically inserted here -->
-                 <!--
-                    <div class="cartItem" data-id="1">
-                       <img src="Assets/royal oak offshore.jpg" alt="Luxury Watch 1" height="100px" width="100px">
-                       <div class="itemDetails">
-                           <h3>Luxury Watch Model A</h3>
-                           <p>A luxury sports watch with a bold design and exceptional craftsmanship.</p>
-                           <p>Price: $5,000</p>
-                           <p>Quantity: <input type="number" class="itemQuantity" value="1" min="1"></p>
-                           <button class="removeBtn">Remove</button>
-                       </div>
-                   </div>
-                
-                 -->
+                 
             </div>
         </section>
 
@@ -85,43 +76,69 @@
         const cartItemsDiv = document.getElementById('cartItems');
         const totalAmountSpan = document.getElementById('totalAmount');
         const checkoutBtn = document.getElementById('checkoutBtn');
+        let cartCount = document.getElementById('cartCount');
+        let emptyMsg = document.getElementById('empty');
         let totalAmount = 0;
        
 
-        function checkLoginStatus(){
-           
-            let currentUser = sessionStorage.getItem('currentUser');
+       function checkLoginStatus() {
+            const activeUser = JSON.parse(localStorage.getItem("ActiveUser"));
+            const greeting = document.getElementById("greeting");
+            const loginBtn = document.getElementById("loginBtn");
+            const dropdown = document.querySelector(".dropdown");
 
-            const greeting = document.getElementById('greeting');
-            const loginBtn = document.getElementById('loginBtn');
-            const dropdown = document.querySelector('.dropdown');
-            const emptyMsg = document.getElementById('empty')
+            if (activeUser) {
+                // Show user name
+                greeting.textContent = `Welcome, ${activeUser.firstName}!`;
 
-            if (currentUser) {
-                greeting.textContent = `Hello, ${currentUser}!`;
-                loginBtn.style.display = 'none';
-                dropdown.style.display = 'inline-block';
-                console.log('Current cart:', cart);
-                cart.forEach(watch => {
-                const cartItemDiv = createCartItem(watch);
-                cartItemsDiv.appendChild(cartItemDiv);
-                updateTotal();
-            });
+                // Hide login button
+                loginBtn.style.display = "none";
 
+                // Show dropdown
+                dropdown.style.display = "inline-block";
             } else {
-                greeting.textContent = '';
-                loginBtn.style.display = 'inline-block';
-                dropdown.style.display = 'none';
-                emptyMsg.textContent = 'Please login to view your cart'
+                // Not logged in
+                greeting.textContent = "";
 
+                loginBtn.style.display = "inline-block";
+                dropdown.style.display = "none";
             }
         }
-         function logout() {
-            sessionStorage.removeItem('currentUser');
-            alert('You have been logged out.');
-            checkLoginStatus();
+
+
+       function logout() {
+            localStorage.removeItem("ActiveUser");
+            alert("You have been logged out.");
+            window.location.reload();
         }
         
+        function loadCart() {
+            cartItemsDiv.innerHTML = "";
+            totalAmount = 0;
+
+            if (cart.length === 0) {
+                emptyMsg.textContent = "Your cart is empty.";
+                checkoutBtn.disabled = true;
+                updateCartCount(0);
+                totalAmountSpan.textContent = "0.00";
+                return;
+            }
+
+            emptyMsg.textContent = "";
+            checkoutBtn.disabled = false;
+
+            cart.forEach(item => {
+                const itemDiv = createCartItem(item);
+                cartItemsDiv.appendChild(itemDiv);
+            });
+
+            updateTotal();
+        }
+
+        function saveCart() {
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+
 
         function createCartItem(watch) {
             const cartItemDiv = document.createElement('div');
@@ -173,55 +190,70 @@
                 localStorage.setItem('cart', JSON.stringify(cart)); // persist change
             }
         }
+
+
+            function clearAllItems(){
+                cart.length = 0;  
+                localStorage.setItem('cart', JSON.stringify(cart));
+                cartItemsDiv.innerHTML = '';
+
+                cartCount.classList.add ("hidden");
+                
+                totalAmount = 0;
+                if (totalAmountSpan) totalAmountSpan.textContent = totalAmount.toFixed(2);
+                localStorage.setItem('Total',JSON.stringify(totalAmount));
+                sessionStorage.setItem('total',JSON.stringify(totalAmount));
+
+                if(cartCount){
+                    cartCount.style.display = 'none';
+                    cartCount.classList.add('hidden');
+                }
+                if(emptyMsg){
+                    emptyMsg.textContent = 'Your cart is empty.';
+                }
+                if(checkoutBtn){
+                    checkoutBtn.disabled = true;
+                }
+                        
+        }
         
-        window.onload = function() {
-            console.log('Loading cart page...');
-            console.log('Current cart:', cart);
-            checkLoginStatus();
-            updateCartCount(cart.length);
-        };
+
+        
         
         
         function updateTotal() {
             totalAmount = 0;
-            //const cartItemDivs = document.querySelectorAll('.cartItem');
-            //cartItemDivs.forEach(cartItemDiv => {
-                //const id = parseInt(cartItemDiv.getAttribute('data-id'));
-                //const watch = cart.find(w => w.id === id);
-                cart.forEach(watch => {
-            const quantity = watch.quantity || 1;
-            totalAmount += watch.price * quantity;
-        });
-                
-                
-            //});
+            cart.forEach(watch => {
+                const quantity = watch.quantity || 1;
+                totalAmount += watch.price * quantity;
+            });
+
             totalAmountSpan.textContent = totalAmount.toFixed(2);
             localStorage.setItem('Total',JSON.stringify(totalAmount));
-            sessionStorage.setItem('total',JSON.stringify(totalAmount));
+            sessionStorage.setItem('subTotal',JSON.stringify(totalAmount));
         }
-
-
+        
+        
         function updateCart(){
              const watch = cart.find(w => w.id === id);
              localStorage.setItem('cart',cart);
-        }
+            }
 
         checkoutBtn.addEventListener('click', () => {
-         if (!sessionStorage.getItem('currentUser')) {
-            alert("Please login before checking out.");
+            if (!localStorage.getItem('ActiveUser')) {
+                alert("Please login before checking out.");
             return;
         }
-        localStorage.setItem('cart', JSON.stringify(cart));
-        localStorage.setItem('Total', JSON.stringify(totalAmount));
+        saveCart();
         window.location.href = 'checkoutPg.html';
     
         updateCart();
     });
-
+    
     function updateCartCount(count){
-            const cartCount = document.getElementById('cartCount');
+        const cartCount = document.getElementById('cartCount');
             
-            if(cartCount){
+        if(cartCount){
                 cartCount.textContent= count;
 
                 if(count ===0){
@@ -233,8 +265,22 @@
                 }
             }
         }
+        
+        window.onload = function() {
+            console.log('Loading cart page...');
+            console.log('Current cart:', cart);
+            checkLoginStatus();
+            updateCartCount(cart.length);
+            loadCart();
+        };
 
-    </script>
+
+    function exitCartPage(){
+        window.location.href = 'watchPg.html';
+    }
+    
+    
+</script>
 
 </body>
 </html>
