@@ -24,6 +24,7 @@
                         <p id="greeting"></p>
                         <div class="dropdown-Content">
                             <a href="#" id="logoutBtn" onclick="logout()">Logout</a>
+                            <a href="#" id="invoiceBtn" onclick="getUserInvoices()">Invoices</a>
                         </div>
                     </div>
                     <a href="cartPg.html"><img src="Assets/cart icon.png" width="30px" height="30px"></a>
@@ -265,6 +266,65 @@
                 }
             }
         }
+
+
+        function getUserInvoices() {
+                const activeUser = JSON.parse(localStorage.getItem("ActiveUser"));
+                const popup = document.getElementById("invoicePopup");
+                const listContainer = document.getElementById("invoiceListContainer");
+
+                if (!activeUser) {
+                    alert("You must be logged in to view invoices.");
+                    return;
+                }
+
+                const allUsers = JSON.parse(localStorage.getItem("RegistrationData")) || [];
+                const user = allUsers.find(u => u.trn === activeUser.trn);
+
+                // Clear old results
+                listContainer.innerHTML = "";
+
+                if (!user || !user.invoices || user.invoices.length === 0) {
+                    listContainer.innerHTML = "<p>No invoices found.</p>";
+                } else {
+                    user.invoices.forEach((invoice, index) => {
+                        const card = document.createElement("div");
+                        card.className = "invoice-card";
+                        card.innerHTML = `
+                            <button class="invoice-btn" data-id="${invoice.invoiceNumber}">
+                                <p><strong>Invoice #${index + 1}</strong></p>
+                                <p><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
+                                <p><strong>Total:</strong> $${invoice.total.toFixed(2)}</p>
+                            </button>
+                        `;
+                        listContainer.appendChild(card);
+                        card.querySelector(".invoice-btn").addEventListener("click", function (e) {
+                            const invoiceId = e.target.closest(".invoice-btn").getAttribute("data-id");
+            
+                            // Save the selected invoice number
+                            localStorage.setItem("selectedInvoice", invoiceId);
+            
+                            // Redirect to invoice page
+                            window.location.href = "invoicePg.html";
+                        });
+                    });
+                }
+
+                // Show popup
+                popup.style.display = "flex";
+            }
+
+
+            document.getElementById("closeInvoicePopup").onclick = function() {
+                document.getElementById("invoicePopup").style.display = "none";
+            };
+
+        window.onclick = function(event) {
+            const popup = document.getElementById("invoicePopup");
+            if (event.target === popup) {
+                popup.style.display = "none";
+            }
+        };
         
         window.onload = function() {
             console.log('Loading cart page...');

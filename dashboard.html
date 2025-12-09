@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="cartPg.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&family=Instrument+Serif:ital@0;1&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #f0f2f5;
+            font-family: 'Quicksand', sans-serif;
+        }
+        .freq-section {
+            background: #ffffff;
+            padding: 20px;
+            margin: 25px auto;
+            width: 90%;
+            border-radius: 12px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+        }
+
+        .freq-section h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .freq-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .freq-card {
+            background: #f8f8f8;
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .freq-card h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .freq-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .freq-card li {
+            margin: 6px 0;
+            font-size: 16px;
+        }
+
+
+    </style>
+    <title>Checkout</title>
+</head>
+<body>
+    <main id="container">
+         <section id="headerSection">
+                <a href="homePg.html"><img src="Assets/rendezvous logo.png" alt="Company Logo" id="logoImage" height="100px" width="100px"></a>
+                <nav>
+                    <a href="jetPg.html"><button>JETS</button></a>
+                    <a href="watchPg.html"><button>WATCHES</button></a>
+                     <a href="#contact"><button>ABOUT</button></a>
+                </nav>
+               <div>
+                    <div class="dropdown">
+                        <p id="greeting"></p>
+                        <div class="dropdown-Content">
+                            <a href="#" id="logoutBtn" onclick="logout()">Logout</a>
+                        </div>
+                    </div>
+                    <a href="cartPg.html"><img src="Assets/cart icon.png" width="30px" height="30px"></a>
+                     <span id="cartCount" class="hidden"></span>
+               </div>
+        </section>
+
+        <section id="userFrequencyDashboard" class="freq-section">
+    <h2>User Frequency Report</h2>
+
+    <div class="freq-grid">
+        <div class="freq-card">
+            <h3>Gender Frequency</h3>
+            <ul id="genderList"></ul>
+        </div>
+
+        <div class="freq-card">
+            <h3>Age Group Frequency</h3>
+            <ul id="ageGroupList"></ul>
+        </div>
+    </div>
+</section>
+         <footer id="contact">
+            <div id="info">
+                <p>Contact us:</p>
+                <p><a href="mailto:seangroves9@gmail.com">Email: Rendezvous@gmail.com</a></p>
+                <p>Phone: +44 1234 567890</p>
+            </div>
+            <div>
+            <a href="https://www.facebook.com/"><img class="footericons" src="Assets/fbIconBW.png" alt="Facebook Icon"></a>
+            <a href="https://www.instagram.com/"><img class="footericons" src="Assets/igIconBW.png" alt="Instagram Icon"></a> 
+            <a href="https://x.com/"><img class="footericons" src="Assets/twitterIconBW.png" alt="Twitter Icon"></a> 
+            </div>
+
+            <p>Sean Groves #2303829</p>
+            <p><a href="mailto:seanmgroves@students.utech.edu.jm">Email: seanmgroves@students.utech.edu.jm</a></p>
+            <p>CIT2011 WED@10pm</p>
+            <p>Web Programming Individual Assignment 2</p>
+            <p>&copy; 2025 Redezvous. All rights reserved.</p>
+        </footer>
+
+    </main>
+
+    <script>
+       function ShowUserFrequency() {
+    const users = JSON.parse(localStorage.getItem("RegistrationData")) || [];
+
+    // Prepare UI elements
+    const genderList = document.getElementById("genderList");
+    const ageGroupList = document.getElementById("ageGroupList");
+
+    if (!users.length) {
+        genderList.innerHTML = "<li>No registered users found.</li>";
+        ageGroupList.innerHTML = "<li>No registered users found.</li>";
+        return;
+    }
+
+    // --- GENDER FREQUENCY ---
+    let genderFreq = { Male: 0, Female: 0, Other: 0 };
+
+    users.forEach(u => {
+        const g = u.gender || "Other";
+        if (genderFreq[g] !== undefined) {
+            genderFreq[g]++;
+        } else {
+            genderFreq["Other"]++;
+        }
+    });
+
+    genderList.innerHTML = `
+        <li>Male: ${genderFreq.Male}</li>
+        <li>Female: ${genderFreq.Female}</li>
+        <li>Other: ${genderFreq.Other}</li>
+    `;
+
+
+    // --- AGE GROUP FREQUENCY ---
+    function getAge(dob) {
+        const birth = new Date(dob);
+        const now = new Date();
+        let age = now.getFullYear() - birth.getFullYear();
+
+        const m = now.getMonth() - birth.getMonth();
+        if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) {
+            age--;
+        }
+        return age;
+    }
+
+    let ageGroups = {
+        "18–25": 0,
+        "26–35": 0,
+        "36–50": 0,
+        "50+": 0
+    };
+
+    users.forEach(u => {
+        const age = getAge(u.dob);
+
+        if (age <= 25) ageGroups["18–25"]++;
+        else if (age <= 35) ageGroups["26–35"]++;
+        else if (age <= 50) ageGroups["36–50"]++;
+        else ageGroups["50+"]++;
+    });
+
+    ageGroupList.innerHTML = `
+        <li>18–25: ${ageGroups["18–25"]}</li>
+        <li>26–35: ${ageGroups["26–35"]}</li>
+        <li>36–50: ${ageGroups["36–50"]}</li>
+        <li>50+: ${ageGroups["50+"]}</li>
+    `;
+}
+
+    window.onload = function(){
+        ShowUserFrequency();
+    }
+    </script>
+</body>
+</html>

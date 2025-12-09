@@ -24,6 +24,7 @@
                         <p id="greeting"></p>
                         <div class="dropdown-Content">
                             <a href="#" id="logoutBtn" onclick="logout()">Logout</a>
+                             <a href="#" id="invoiceBtn" onclick="getUserInvoices()">Invoices</a>
                         </div>
                     </div>
                     <a href="cartPg.html"><img src="Assets/cart icon.png" width="30px" height="30px"></a>
@@ -37,6 +38,7 @@
                         <img src="Assets/R logo.png" alt="rendezvous syumbol logo" width="200px" height="200px">
                         <p>+1 (876) 345-4356</p>
                         <P>Rendezvous@gmail.com</P>
+                        <p>Date of invoice: <span id="invoiceDate"></span></p>
                     </div>
                     <div id="addressDiv">
                        
@@ -56,160 +58,6 @@
         <button onclick="printInvoice()" id="printBtn" >Print Invoice</button>
     </main>
 
-    <script>
-
-        function destringify(item){
-            return JSON.parse(item);
-        }
-
-        const customer = destringify(sessionStorage.getItem('name'));
-        const email = destringify(sessionStorage.getItem('email'));
-        const address = destringify(sessionStorage.getItem('address'));
-        const city = destringify(sessionStorage.getItem('city'));
-        const country = destringify(sessionStorage.getItem('country'));
-        const cart = destringify(sessionStorage.getItem('cart')) || [];
-        const addressLine = document.getElementById('addressDiv');
-        const itemsList = document.getElementById('itemsList')
-
-        function checkLoginStatus() {
-            const activeUser = JSON.parse(localStorage.getItem("ActiveUser"));
-            const greeting = document.getElementById("greeting");
-            const loginBtn = document.getElementById("loginBtn");
-            const dropdown = document.querySelector(".dropdown");
-
-            if (activeUser) {
-                // Show user name
-                greeting.textContent = `Welcome, ${activeUser.firstName}!`;
-
-                // Hide login button
-                loginBtn.style.display = "none";
-
-                // Show dropdown
-                dropdown.style.display = "inline-block";
-            } else {
-                // Not logged in
-                greeting.textContent = "";
-
-                loginBtn.style.display = "inline-block";
-                dropdown.style.display = "none";
-            }
-        }
-
-
-       function logout() {
-            localStorage.removeItem("ActiveUser");
-            alert("You have been logged out.");
-            window.location.reload();
-        }
-
-        function displayCustomerInfo(){
-            const newAddress = document.createElement('p');
-            const customerInfo = document.createElement('div');
-            newAddress.innerHTML = `
-                ${address}, ${city}, ${country}
-            `;
-
-            customerInfo.innerHTML =`
-                <p><strong>Customer :</strong> ${customer}</p>
-                <p><strong>E-mail:</strong> ${email}<p>
-                <p><strong>Address:</strong> ${address},<p>
-                <p> ${city},<p>
-                <p> ${country}<p>
-
-            `;
-           addressLine.appendChild(customerInfo);
-        }
-
-        function createInvoiceItem(watch){
-            const newTableRow = document.createElement('tr');
-            newTableRow.dataset.id = watch.id;
-            let itemPrice = watch.price * watch.quantity;
-            newTableRow.innerHTML = `
-            <td> 
-                <img src="${watch.imgURL}" alt="${watch.model}" height="20px" width="20px">
-                ${watch.brand} - ${watch.model}
-            </td>
-                
-            <td>
-                ${watch.quantity}
-            </td>
-
-            <td>
-                $${itemPrice.toFixed(2)}
-            </td>
-            `;
-
-            return newTableRow;
-        }
-
-        function displayInvoice(){
-            cart.forEach(watch => {
-                const newTableRow = createInvoiceItem(watch);
-                itemsList.appendChild(newTableRow);
-            });
-           
-            const subTotal = parseInt(sessionStorage.getItem('subTotal'));
-            const tax = parseInt(sessionStorage.getItem('salesTax'));
-            const total = parseInt(sessionStorage.getItem('grandTotal'));
-            
-            const subTotalRow= document.createElement('tr');
-            subTotal.id = 'subTotal';
-            subTotalRow.innerHTML = ` 
-                <td class ="noBorder"></td>
-                <td class ="noBorder"></td>
-                <td id="subTotalDisplay"><strong>Sub-Total: $${subTotal.toFixed(2)}</strong></td>
-    
-            `;
-
-             const taxRow= document.createElement('tr');
-            taxRow.id = 'tax';
-            taxRow.innerHTML = ` 
-                <td class ="noBorder"></td>
-                <td class ="noBorder"></td>
-                <td id="taxDisplay"><strong>Tax: $${tax.toFixed(2)}</strong></td>
-    
-            `;
-        
-             const totalRow= document.createElement('tr');
-            totalRow.id = 'subTotal';
-            totalRow.innerHTML = ` 
-                <td class ="noBorder"></td>
-                <td class ="noBorder"></td>
-                <td id="totalDisplay"><strong>Total: $${total.toFixed(2)}</strong></td>
-    
-            `;
-            
-            
-            
-            
-        itemsList.appendChild(subTotalRow);
-        itemsList.appendChild(taxRow);
-        itemsList.appendChild(totalRow);
-        }
-
-
-        const invoiceSection = document.getElementById("invoiceSection");
-
-        function printInvoice() {
-            const printContents = invoiceSection.innerHTML;
-            const originalContents = document.body.innerHTML;
-
-            document.body.innerHTML = printContents;
-            window.print();
-            document.body.innerHTML = originalContents;
-
-            location.reload(); // restore JS functionality
-        }
-
-
-        window.onload = function(){
-                console.log('loading invoice...');
-                checkLoginStatus();
-                displayCustomerInfo();
-                displayInvoice();
-
-        }
-
-    </script>
+   <script src="invoiceFunctionality.js"></script>
 </body>
 </html>

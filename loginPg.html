@@ -110,6 +110,8 @@
 
             // --- LOGIN BUTTON ---
             const loginBtn = document.getElementById("loginBtn");
+            const adminTRN = "999-999-999";
+            const adminPassword = "Admin@123";
 
             loginBtn.addEventListener("click", function () {
                 const trn = document.getElementById("storedTrn").value.trim();
@@ -120,7 +122,13 @@
                     alert("Please enter both your TRN and password.");
                     return;
                 }
-
+                
+                if(trn === adminTRN && password === adminPassword){
+                    //admin login
+                    alert("Admin login successful");
+                    window.location.href = "homePgAdmin.html";
+                    return;
+                }
                 // Load registered users
                 const users = JSON.parse(localStorage.getItem("RegistrationData")) || [];
 

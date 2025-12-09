@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="homePg.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&family=Instrument+Serif:ital@0;1&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <title>Home</title>
+</head>
+<body>
+    <main class="container">
+        <section id="headerSection">
+                <a href="homePg.html"><img src="Assets/rendezvous logo.png" alt="Company Logo" id="logoImage" height="100px" width="100px"></a>
+                <nav>
+                    <a href="jetPg.html"><button>JETS</button></a>
+                    <a href="watchPg.html"><button>WATCHES</button></a>
+                    <a href="#contact"><button>ABOUT</button></a>
+                    <a href="dashboard.html"><button>DASHBOARD</button></a>
+                </nav>
+                <div>
+                    <div class="dropdown">
+                        <p id="greeting">Hello, ADMIN!</p>
+                        <div class="dropdown-Content">
+                            <a href="#" id="logoutBtn" onclick="logout()">Logout</a>
+                            
+                        </div>
+                    </div>
+                    <a href="cartPg.html"><img src="Assets/cart icon.png" width="30px" height="30px"></a>
+                    <span id="cartCount" class="hidden"></span>
+                </div>
+        </section>
+        <section id="welcomeSection">
+            <div id="splitBackgroud">
+                <div id="leftSide"></div>
+                <div id="rightSide"></div>
+            </div>
+            <div id="welcomeText">
+                <h1>Where Time Meets The Sky</h1>
+                <p>Experience Timeless Luxury - from precious timepieces to private travel</p>
+                <div id="buttonContainer">
+                    <a href="jetPg.html"><button>EXPLORE JETS</button></a>
+                    <a href="watchPg.html"><button>SHOP WATCHES</button></a>
+                </div>
+            </div>
+        </section>
+
+        <section id="overview">
+            <h2>About Rendezvous</h2>
+            <p>At Rendezvous, we specialize in offering an exclusive selection of luxury watches and private jets. Our curated collection features timepieces from the world's most prestigious brands, known for their craftsmanship, innovation, and timeless design. Whether you're a seasoned collector or a first-time buyer, our expert team is here to guide you through our offerings and help you find the perfect watch that suits your style and needs.</p>
+            <p>In addition to our exquisite watch collection, we provide access to a fleet of private jets for those seeking unparalleled travel experiences. Our private jet services cater to discerning clients who value privacy, comfort, and convenience. From short domestic flights to international journeys, we ensure that every aspect of your travel is handled with the utmost care and professionalism.</p>
+            <p>Discover the epitome of luxury with Rendezvous - where time meets the sky.</p>
+        </section>
+
+        <footer id="contact">
+            <div id="info">
+                <p>Contact us:</p>
+                <p><a href="mailto:seangroves9@gmail.com">Email: Rendezvous@gmail.com</a></p>
+                <p>Phone: +44 1234 567890</p>
+            </div>
+            <div>
+            <a href="https://www.facebook.com/"><img class="footericons" src="Assets/fbIconBW.png" alt="Facebook Icon"></a>
+            <a href="https://www.instagram.com/"><img class="footericons" src="Assets/igIconBW.png" alt="Instagram Icon"></a> 
+            <a href="https://x.com/"><img class="footericons" src="Assets/twitterIconBW.png" alt="Twitter Icon"></a> 
+            </div>
+
+            <p>Sean Groves #2303829</p>
+            <p><a href="mailto:seanmgroves@students.utech.edu.jm">Email: seanmgroves@students.utech.edu.jm</a></p>
+            <p>CIT2011 WED@10pm</p>
+            <p>Web Programming Individual Assignment 2</p>
+            <p>&copy; 2025 Redezvous. All rights reserved.</p>
+        </footer>
+
+    </main>
+
+
+    <script src="invoiceFunctionality.js"></script>
+    <script>
+
+        function logout() {
+            localStorage.removeItem("ActiveUser");
+            alert("You have been logged out.");
+            window.location.reload();
+        }
+
+        function updateCartCount(count) {
+            const cartCount = document.getElementById("cartCount");
+
+            if (!cartCount) return;
+
+            if (count === 0) {
+                cartCount.style.display = "none";
+                cartCount.classList.add("hidden");
+            } else {
+                cartCount.textContent = count;
+                cartCount.style.display = "inline-block";
+                cartCount.classList.remove("hidden");
+            }
+        }
+
+        window.onload = function(){
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            updateCartCount(cart.length);
+            checkLoginStatus();
+        };
+    </script>
+</body>
+</html>
