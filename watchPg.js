@@ -1,3 +1,5 @@
+  //contributors: Sean Groves #2303829
+  //              Monique Whittaker #2104569
   function checkLoginStatus() {
             const activeUser = JSON.parse(localStorage.getItem("ActiveUser"));
             const greeting = document.getElementById("greeting");

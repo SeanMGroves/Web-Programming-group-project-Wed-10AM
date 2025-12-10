@@ -1,3 +1,6 @@
+// Contibutors: Romaine Morris #21008871
+//              Sean Groves #2303829
+
 localStorage.getItem('cart');
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const cartItemsDiv = document.getElementById('cartItems');

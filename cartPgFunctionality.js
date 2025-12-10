@@ -1,4 +1,5 @@
-
+//      Contriburtors: Venicia Murray #2407697
+//                     Sean Gorves #2303829
         localStorage.getItem('cart');
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         const cartItemsDiv = document.getElementById('cartItems');

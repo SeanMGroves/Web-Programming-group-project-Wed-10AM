@@ -1,4 +1,6 @@
-
+        //Contributors : Sean Groves #2303829
+        //               Nathan Allen #2306974
+        
         function destringify(item){
             return JSON.parse(item);
         }
@@ -343,13 +345,11 @@
                 saveInvoice(invoice);
                 
                 const email = destringify(sessionStorage.getItem('email'));
-            }
-            
-            window.close = function(){
                 notifyInvoiceSent(email);
                 saveInvoiceToUser();         
-        }
-
+            }
+            
+            
 
     function ShowInvoices() {
     let allInvoices = JSON.parse(localStorage.getItem("AllInvoices")) || [];

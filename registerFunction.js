@@ -1,3 +1,4 @@
+//Contributors : Monique Whitaker #2104569
 const firstName = document.getElementById('firstName');
 const lastName = document.getElementById('lastName');
 const email = document.getElementById('email');
