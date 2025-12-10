@@ -18,26 +18,28 @@
           <h1>User Login</h1>
 
  
-            <label for="trn">TRN</label>
-            <input type="text" id="storedTrn" placeholder="Enter your TRN" required>
+            <label for="trn">TRN</label><br>
+            <input type="text" id="storedTrn" placeholder="Enter your TRN" required><br><br>
 
             <label for="password">Password</label>
             <div style="position: relative;">
                 <input type="password" id="storedPassword" placeholder="Enter your password" required>
                 <span id="togglePassword" 
                     style="position:absolute; right:10px; top:50%; transform:translateY(-50%); cursor:pointer;">
-                    👁️
+                    👁️👁️<br>
                 </span>
             </div>
 
             <div class="actions">
+            <br><br>
             <button type="button" id="loginBtn">Login</button>
-            <button type="reset">Clear</button>
+            <button type="reset" id="loginBtn">Clear</button>
             </div>
 
             <p>
             Don't have an account?
-            <a href="registerPg.html">Register here</a>
+            <p>Click register</p>
+            <img src="Assets/arrow.png" alt="register icon" width="15px" height="15px">
             </p>
             <!-- load the script at the end so DOM elements exist -->
             
@@ -58,10 +60,10 @@
 
             <label for="gender">Gender:</label>
             <select id="gender" name="gender" required>
-            <option value="">--Select--</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
+                <option value="">--Select--</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
             </select><br><br>
 
             <label for="phone">phone Number:</label>
@@ -83,7 +85,7 @@
             <input type="password" id="confirmPass" name="confirmPass" required><br><br>
 
             <button type="button" id="registerBtn">Register</button>
-            <button type="reset">Cancel</button>
+            <button type="reset" id="registerBtn">Cancel</button>
 
 
 
@@ -104,7 +106,7 @@
                     togglePassword.textContent = "🙈";
                 } else {
                     passwordField.type = "password";
-                    togglePassword.textContent = "👁️";
+                    togglePassword.textContent = " 👁️👁️";
                 }
             });
 
