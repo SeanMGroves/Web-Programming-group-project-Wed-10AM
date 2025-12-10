@@ -149,47 +149,75 @@
         <li>Other: ${genderFreq.Other}</li>
     `;
 
+    let genderContainer = document.getElementById("genderBar");
+            genderContainer.innerHTML = "";
+            for (const gender in genderFreq) {
+                const barWidth = genderFreq[gender] * 20; // Scale factor for visibility
+                genderContainer.innerHTML += `
+                    <div>${gender}: ${genderFreq[gender]}</div>
+                    <img src="Assets/thinbar.png" width="${barWidth}px" height="20px"/>
+                    <br/><br/>
 
-    // --- AGE GROUP FREQUENCY ---
-    function getAge(dob) {
-        const birth = new Date(dob);
-        const now = new Date();
-        let age = now.getFullYear() - birth.getFullYear();
+                `;
+            }
+            
+            // --- AGE GROUP FREQUENCY ---
+            function getAge(dob) {
+                const birth = new Date(dob);
+                const now = new Date();
+                let age = now.getFullYear() - birth.getFullYear();
 
-        const m = now.getMonth() - birth.getMonth();
-        if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) {
-            age--;
+                const m = now.getMonth() - birth.getMonth();
+                if (m < 0 || (m === 0 && now.getDate() < birth.getDate())) {
+                    age--;
+                }
+                return age;
+            }
+
+            let ageGroups = {
+                "18–25": 0,
+                "26–35": 0,
+                "36–50": 0,
+                "50+": 0
+            };
+
+            users.forEach(u => {
+                const age = getAge(u.dob);
+
+                if (age <= 25) ageGroups["18–25"]++;
+                else if (age <= 35) ageGroups["26–35"]++;
+                else if (age <= 50) ageGroups["36–50"]++;
+                else ageGroups["50+"]++;
+            });
+
+            ageGroupList.innerHTML = `
+                <li>18–25: ${ageGroups["18–25"]}</li>
+                <li>26–35: ${ageGroups["26–35"]}</li>
+                <li>36–50: ${ageGroups["36–50"]}</li>
+                <li>50+: ${ageGroups["50+"]}</li>
+            `;
+
+            //Venicia: Ensuring the age group bar chart displays correctly and shows the image for the bar graph
+            let ageGroupContainer = document.getElementById("ageGroupBar");
+            ageGroupContainer.innerHTML = "";
+            for (const group in ageGroups) {
+                const barWidth = ageGroups[group] * 20; // Scale factor for visibility
+                ageGroupContainer.innerHTML += `
+                    <div>${group}: ${ageGroups[group]}</div>
+                    <img src="Assets/thinbar.png" width="${barWidth}px" height="20px"/>
+                    <br/><br/>
+                `;
+            }
+
+
         }
-        return age;
-    }
 
-    let ageGroups = {
-        "18–25": 0,
-        "26–35": 0,
-        "36–50": 0,
-        "50+": 0
-    };
-
-    users.forEach(u => {
-        const age = getAge(u.dob);
-
-        if (age <= 25) ageGroups["18–25"]++;
-        else if (age <= 35) ageGroups["26–35"]++;
-        else if (age <= 50) ageGroups["36–50"]++;
-        else ageGroups["50+"]++;
-    });
-
-    ageGroupList.innerHTML = `
-        <li>18–25: ${ageGroups["18–25"]}</li>
-        <li>26–35: ${ageGroups["26–35"]}</li>
-        <li>36–50: ${ageGroups["36–50"]}</li>
-        <li>50+: ${ageGroups["50+"]}</li>
-    `;
-}
-
-    window.onload = function(){
-        ShowUserFrequency();
-    }
+        window.onload = function(){
+            ShowUserFrequency();
+        }
     </script>
 </body>
 </html>
+
+
+    
