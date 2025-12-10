@@ -12,12 +12,13 @@
 <body>
     <main class="container">
         <section id="headerSection">
-                <a href="homePg.html"><img src="Assets/rendezvous logo.png" alt="Company Logo" id="logoImage" height="100px" width="100px"></a>
+                <a href="homePgAdmin.html"><img src="Assets/rendezvous logo.png" alt="Company Logo" id="logoImage" height="100px" width="100px"></a>
                 <nav>
                     <a href="jetPg.html"><button>JETS</button></a>
                     <a href="watchPg.html"><button>WATCHES</button></a>
                     <a href="#contact"><button>ABOUT</button></a>
                     <a href="dashboard.html"><button>DASHBOARD</button></a>
+                    <a href="invoiceAdmin.html"><button>INVOICES</button></a>
                 </nav>
                 <div>
                     <div class="dropdown">
@@ -27,7 +28,7 @@
                             
                         </div>
                     </div>
-                    <a href="cartPg.html"><img src="Assets/cart icon.png" width="30px" height="30px"></a>
+                    <a href="cartPg.html"><img src="Assets/s_cart icon.png" width="30px" height="30px"></a>
                     <span id="cartCount" class="hidden"></span>
                 </div>
         </section>
@@ -75,8 +76,34 @@
     </main>
 
 
-    <script src="invoiceFunctionality.js"></script>
     <script>
+
+        
+       function checkLoginStatus() {
+            const activeUser = JSON.parse(localStorage.getItem("ActiveUser"));
+            const greeting = document.getElementById("greeting");
+            const loginBtn = document.getElementById("loginBtn");
+            const dropdown = document.querySelector(".dropdown");
+
+            if (activeUser) {
+                // Show user name
+                greeting.textContent = `Welcome, ${activeUser.role.toUpperCase()}!`;
+
+                // Show dropdown
+                dropdown.style.display = "inline-block";
+            } else {
+                // Not logged in
+                greeting.textContent = "";
+
+            }
+        }
+
+
+       function logout() {
+            localStorage.removeItem("ActiveUser");
+            alert("You have been logged out.");
+            window.location.reload();
+        }
 
         function logout() {
             localStorage.removeItem("ActiveUser");

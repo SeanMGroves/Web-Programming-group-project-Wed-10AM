@@ -21,7 +21,9 @@
             if (activeUser) {
                 // Show user name
                 greeting.textContent = `Welcome, ${activeUser.firstName}!`;
-
+                if(activeUser.role === "admin"){
+                   greeting.textContent = `Welcome, ${activeUser.role.toUpperCase()}!`
+                }
                 // Hide login button
                 loginBtn.style.display = "none";
 
@@ -339,10 +341,112 @@
                 displayInvoiceDate();
                 const invoice = buildInvoiceObject();
                 saveInvoice(invoice);
-                saveInvoiceToUser();
-
+                
                 const email = destringify(sessionStorage.getItem('email'));
+            }
+            
+            window.close = function(){
                 notifyInvoiceSent(email);
+                saveInvoiceToUser();         
         }
 
-   
+
+    function ShowInvoices() {
+    let allInvoices = JSON.parse(localStorage.getItem("AllInvoices")) || [];
+    const trnSearch = document.getElementById("searchTRN").value.trim();
+
+    const table = document.getElementById("allInvoiceTable");
+
+    // Reset table except header
+    table.innerHTML = `
+        <tr>
+            <th>Invoice #</th>
+            <th>TRN</th>
+            <th>Date</th>
+            <th>Total</th>
+        </tr>
+    `;
+
+    if (trnSearch !== "") {
+        allInvoices = allInvoices.filter(inv => inv.trn.toString() === trnSearch);
+    }
+
+    if (allInvoices.length === 0) {
+        table.innerHTML += `
+            <tr><td colspan="4" style="text-align:center;">No invoices found.</td></tr>
+        `;
+        return;
+    }
+
+    allInvoices.forEach(inv => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td><a href="#" onclick="openInvoice('${inv.invoiceNumber}')">${inv.invoiceNumber}</a></td>
+            <td>${inv.trn}</td>
+            <td>${new Date(inv.date).toLocaleDateString()}</td>
+            <td>$${inv.total.toFixed(2)}</td>
+        `;
+
+        table.appendChild(row);
+    });
+}
+
+    function openInvoice(invoiceNumber) {
+        localStorage.setItem("SelectedInvoice", invoiceNumber);
+        window.location.href = "invoicePg.html"; 
+}
+
+    function getUserInvoices() {
+        const activeUser = JSON.parse(localStorage.getItem("ActiveUser"));
+        const popup = document.getElementById("invoicePopup");
+        const listContainer = document.getElementById("invoiceListContainer");
+
+        if (!activeUser) {
+            alert("You must be logged in to view invoices.");
+            return;
+        }
+
+        const allUsers = JSON.parse(localStorage.getItem("RegistrationData")) || [];
+        const user = allUsers.find(u => u.trn === activeUser.trn);
+
+        // Clear old results
+        listContainer.innerHTML = "";
+
+        if (!user || !user.invoices || user.invoices.length === 0) {
+            listContainer.innerHTML = "<p>No invoices found.</p>";
+        } else {
+            user.invoices.forEach((invoice, index) => {
+                const card = document.createElement("div");
+                card.className = "invoice-card";
+                card.innerHTML = `
+                    <button class="invoice-btn" data-id="${invoice.invoiceNumber}">
+                        <p><strong>Invoice #${index + 1}</strong></p>
+                        <p><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
+                        <p><strong>Total:</strong> $${invoice.total.toFixed(2)}</p>
+                    </button>
+                `;
+                listContainer.appendChild(card);
+                card.querySelector(".invoice-btn").addEventListener("click", function (e) {
+                    const invoiceId = e.target.closest(".invoice-btn").getAttribute("data-id");
+    
+                    // Save the selected invoice number
+                    localStorage.setItem("selectedInvoice", invoiceId);
+    
+                    // Redirect to invoice page
+                    window.location.href = "invoicePg.html";
+                });
+            });
+        }
+
+        // Show popup
+        popup.style.display = "flex";
+    }
+
+
+    document.getElementById("closeInvoicePopup").onclick = function() {
+        document.getElementById("invoicePopup").style.display = "none";
+    };
+
+
+

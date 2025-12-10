@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="stylesheet" href="cartPg.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&family=Instrument+Serif:ital@0;1&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <title>Invoice</title>
+</head>
+<body>
+    <main id="container">
+        <section id="headerSection">
+             <a href="homePgAdmin.html"><img src="Assets/rendezvous logo.png" alt="Company Logo" id="logoImage" height="100px" width="100px"></a>
+                <nav>
+                   <a href="jetPg.html"><button>JETS</button></a>
+                    <a href="watchPg.html"><button>WATCHES</button></a>
+                    <a href="dashboard.html"><button>DASHBOARD</button></a>
+                    <a href="invoiceAdmin.html"><button>INVOICES</button></a>
+                </nav>
+               <div>
+                    <div class="dropdown">
+                        <p id="greeting"></p>
+                        <div class="dropdown-Content">
+                            <a href="#" id="logoutBtn" onclick="logout()">Logout</a>
+                        </div>
+                    </div>
+                     <a href="cartPg.html"><img src="Assets/s_cart icon.png" width="30px" height="30px"></a>
+               </div>
+        </section>
+
+         <section class="invoiceListSection">
+            <h2>All Invoices</h2>
+
+            <input type="text" id="searchTRN" placeholder="Enter TRN to search invoices">
+            <button onclick="ShowInvoices()">Search</button>
+
+            <table id="allInvoiceTable">
+                <tr>
+                    <th>Invoice #</th>
+                    <th>TRN</th>
+                    <th>Date</th>
+                    <th>Total</th>
+                </tr>
+            </table>
+        </section>
+
+        
+
+   <script src="invoiceFunctionality.js"></script>
+</body>
+</html>

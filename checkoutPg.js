@@ -41,7 +41,7 @@ localStorage.getItem('cart');
             cartItemDiv.className = 'cartItem';
             cartItemDiv.dataset.id = watch.id;
 
-            const itemTotal = watch.price * (watch.quantity || 1);
+            const itemTotal = watch.price * (watch.quantity || 1) * 1.15;
             totalAmount += itemTotal;
 
             cartItemDiv.innerHTML = `
@@ -70,7 +70,7 @@ localStorage.getItem('cart');
             cartItemsDiv.appendChild(cartItemDiv);
         });
 
-        let salesTax = totalAmount * 0.15;
+        let salesTax = JSON.parse(sessionStorage.getItem('tax'));
         sessionStorage.setItem('salesTax', JSON.stringify(salesTax));
         let grandTotal = totalAmount + salesTax;
         sessionStorage.setItem('grandTotal', JSON.stringify(grandTotal));
@@ -80,7 +80,7 @@ localStorage.getItem('cart');
         totalDiv.innerHTML = `
             <hr>
             <h2>Sub-Total: $${totalAmount.toFixed(2)}</h2>
-            <h2>Sales Tax: $${salesTax.toFixed(2)}</h2>
+            <h2>Sales Tax: $${salesTax}</h2>
             <h2>Total: $${grandTotal.toFixed(2)}</h2>
         `;
         cartItemsDiv.appendChild(totalDiv);
@@ -128,6 +128,16 @@ localStorage.getItem('cart');
             sessionStorage.setItem('country',stringify(country));
             window.location.href = 'invoicePg.html';
             });
+
+
+            // CANCEL BUTTON – GO BACK TO CART
+            const cancelBtn = document.getElementById('cancelBtn');
+            if (cancelBtn) {
+                cancelBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    window.location.href = 'cartPg.html';
+                });
+            }
 
              function updateCartCount(count){
             const cartCount = document.getElementById('cartCount');

@@ -63,11 +63,13 @@
 <body>
     <main id="container">
          <section id="headerSection">
-                <a href="homePg.html"><img src="Assets/rendezvous logo.png" alt="Company Logo" id="logoImage" height="100px" width="100px"></a>
+                <a href="homePgAdmin.html"><img src="Assets/rendezvous logo.png" alt="Company Logo" id="logoImage" height="100px" width="100px"></a>
                 <nav>
-                    <a href="jetPg.html"><button>JETS</button></a>
+                     <a href="jetPg.html"><button>JETS</button></a>
                     <a href="watchPg.html"><button>WATCHES</button></a>
-                     <a href="#contact"><button>ABOUT</button></a>
+                    <a href="#contact"><button>ABOUT</button></a>
+                    <a href="dashboard.html"><button>DASHBOARD</button></a>
+                    <a href="invoiceAdmin.html"><button>INVOICES</button></a>
                 </nav>
                <div>
                     <div class="dropdown">
@@ -76,8 +78,8 @@
                             <a href="#" id="logoutBtn" onclick="logout()">Logout</a>
                         </div>
                     </div>
-                    <a href="cartPg.html"><img src="Assets/cart icon.png" width="30px" height="30px"></a>
-                     <span id="cartCount" class="hidden"></span>
+                     <a href="cartPg.html"><img src="Assets/s_cart icon.png" width="30px" height="30px"></a>
+                    <span id="cartCount" class="hidden"></span>
                </div>
         </section>
 
@@ -118,6 +120,41 @@
     </main>
 
     <script>
+
+        function checkLoginStatus() {
+            const greeting = document.getElementById("greeting");
+            const loginBtn = document.getElementById("loginBtn");
+            const dropdown = document.querySelector(".dropdown");
+
+            if (activeUser) {
+                // Show user name
+                greeting.textContent = `Welcome, ${activeUser.firstName}!`;
+                if(activeUser.role === "admin"){
+                   greeting.textContent = `Welcome, ${activeUser.role.toUpperCase()}!`
+                }
+                // Hide login button
+                loginBtn.style.display = "none";
+
+                // Show dropdown
+                dropdown.style.display = "inline-block";
+            } else {
+                // Not logged in
+                greeting.textContent = "";
+
+                loginBtn.style.display = "inline-block";
+                dropdown.style.display = "none";
+            }
+        }
+
+
+       function logout() {
+            localStorage.removeItem("ActiveUser");
+            alert("You have been logged out.");
+            window.location.reload();
+        }
+
+
+
        function ShowUserFrequency() {
     const users = JSON.parse(localStorage.getItem("RegistrationData")) || [];
 
@@ -212,8 +249,27 @@
 
         }
 
+        function updateCartCount(count){
+        const cartCount = document.getElementById('cartCount');
+            
+        if(cartCount){
+                cartCount.textContent= count;
+
+                if(count === 0){
+                    cartCount.style.display = 'none';
+                    cartCount.classList.add = 'hidden';
+                }else{
+                    cartCount.style.display = 'block';
+                    cartCount.classList.remove = 'hidden';
+                }
+            }
+        }
+
+
+
         window.onload = function(){
             ShowUserFrequency();
+            updateCartCount(0);
         }
     </script>
 </body>

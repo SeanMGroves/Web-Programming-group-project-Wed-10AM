@@ -27,11 +27,21 @@
                              <a href="#" id="invoiceBtn" onclick="getUserInvoices()">Invoices</a>
                         </div>
                     </div>
-                    <a href="cartPg.html"><img src="Assets/cart icon.png" width="30px" height="30px"></a>
+                     <a href="cartPg.html"><img src="Assets/s_cart icon.png" width="30px" height="30px"></a>
                </div>
         </section>
 
         <section id="invoiceSection">
+            <div id="invoicePopup" class="invoice-modal">
+                <div class="invoice-modal-content">
+                    <button type="button" id="closeInvoicePopup" class="close-btn">X</button>
+                    <h2>Your Invoices</h2>
+                    <div id="invoiceListContainer">
+                    <!-- Invoices will be injected here -->
+                    </div>
+                </div>
+            </div>
+            
             <div id="invoice">
                 <div id="head">
                     <div id="logo">

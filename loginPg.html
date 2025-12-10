@@ -35,7 +35,10 @@
             <button type="button" id="loginBtn">Login</button>
             <button type="reset" id="loginBtn">Clear</button>
             </div>
-
+            <p>
+                Forgot your password?
+                <a href="resetPassword.html">Reset Password</a>
+            </p>
             <p>
             Don't have an account?
             <p>Click register</p>
@@ -128,6 +131,7 @@
                 if(trn === adminTRN && password === adminPassword){
                     //admin login
                     alert("Admin login successful");
+                    localStorage.setItem("ActiveUser", JSON.stringify({trn: adminTRN, role: "admin"}));
                     window.location.href = "homePgAdmin.html";
                     return;
                 }

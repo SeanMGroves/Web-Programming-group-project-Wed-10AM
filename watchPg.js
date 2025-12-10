@@ -3,6 +3,7 @@
             const greeting = document.getElementById("greeting");
             const loginBtn = document.getElementById("loginBtn");
             const dropdown = document.querySelector(".dropdown");
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
 
             if (activeUser) {
                 // Show user name
@@ -29,7 +30,12 @@
         }
 
 
-        window.onload = checkLoginStatus;
+        window.onload = function(){
+             const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            updateCartCount(cart.length);
+            checkLoginStatus();
+        }
+        
  
  //default constructor for watch objects
         const WatchItem = {
@@ -70,6 +76,7 @@
         //finding the watch that was chosen to be added to cart
         const watchList = document.getElementById('watchList');
         watchList.addEventListener('click', (e) => {
+             const cart = JSON.parse(localStorage.getItem('cart')) || [];
             if (e.target.classList.contains('addBtn')) {//anytime a Add to cart button is clicked
                 const watchID = e.target.closest('div').dataset.id;//finding the id number of the item selected
                 const watch = watchInventory.find((w) => w.id == parseInt(watchID));//connecting the watch id to the id in the array 'wacth inventory'
@@ -159,3 +166,11 @@ function filterWatches() {
         item.style.display = visible ? "block" : "none";
     });
 }
+
+ function loadCart() {
+
+            if (cart.length === 0) {
+                updateCartCount(0);
+                return;
+            }
+        }
