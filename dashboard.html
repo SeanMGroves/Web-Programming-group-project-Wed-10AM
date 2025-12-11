@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><!--Contributors: Venicia Murray #2407697
-                        Sean Groves #2303829-->
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="cartPg.css">
@@ -64,13 +63,13 @@
 <body>
     <main id="container">
          <section id="headerSection">
-                <a href="homePgAdmin.html"><img src="Assets/rendezvous logo.png" alt="Company Logo" id="logoImage" height="100px" width="100px"></a>
+                <a href="homePg.html"><img src="Assets/rendezvous logo.png" alt="Company Logo" id="logoImage" height="100px" width="100px"></a>
                 <nav>
-                     <a href="jetPg.html"><button>JETS</button></a>
+                    <a href="homePg.html"><button>HOME</button></a>
+                    <a href="jetPg.html"><button>JETS</button></a>
                     <a href="watchPg.html"><button>WATCHES</button></a>
                     <a href="#contact"><button>ABOUT</button></a>
-                    <a href="dashboard.html"><button>DASHBOARD</button></a>
-                    <a href="invoiceAdmin.html"><button>INVOICES</button></a>
+                    <a href="loginPg.html" ><button id="loginBtn">LOGIN</button></a>
                 </nav>
                <div>
                     <div class="dropdown">
@@ -79,8 +78,8 @@
                             <a href="#" id="logoutBtn" onclick="logout()">Logout</a>
                         </div>
                     </div>
-                     <a href="cartPg.html"><img src="Assets/s_cart icon.png" width="30px" height="30px"></a>
-                    <span id="cartCount" class="hidden"></span>
+                    <a href="cartPg.html"><img src="Assets/s_cart icon.png" width="30px" height="30px"></a>
+                     <span id="cartCount" class="hidden"></span>
                </div>
         </section>
 
@@ -90,11 +89,13 @@
     <div class="freq-grid">
         <div class="freq-card">
             <h3>Gender Frequency</h3>
+            <div id="genderBar"></div>
             <ul id="genderList"></ul>
         </div>
 
         <div class="freq-card">
             <h3>Age Group Frequency</h3>
+            <div id="ageGroupBar"></div>
             <ul id="ageGroupList"></ul>
         </div>
     </div>
@@ -110,11 +111,14 @@
             <a href="https://www.instagram.com/"><img class="footericons" src="Assets/igIconBW.png" alt="Instagram Icon"></a> 
             <a href="https://x.com/"><img class="footericons" src="Assets/twitterIconBW.png" alt="Twitter Icon"></a> 
             </div>
-
-            <p>Nathan Allen #2306974, Sean Groves #2303829, Romaine Morris #21008871, Venicia Murray #2407697, Monique Whittaker #2104569</p>
+            <p>Monique Whittaker #2104569</p>
+            <p>Venicia Murray #2407697</p>
+            <p>Nathan Allen #2306974</p>
+            <p>Romaine Morris #2108871</p>
+            <p>Sean Groves #2303829</p>
             <p><a href="mailto:seanmgroves@students.utech.edu.jm">Email: seanmgroves@students.utech.edu.jm</a></p>
             <p>CIT2011 WED@10pm</p>
-            <p>Web Programming Group Project</p>
+            <p>Web Programming Individual Assignment 2</p>
             <p>&copy; 2025 Redezvous. All rights reserved.</p>
         </footer>
 
@@ -122,72 +126,38 @@
 
     <script>
 
-        function checkLoginStatus() {
-            const greeting = document.getElementById("greeting");
-            const loginBtn = document.getElementById("loginBtn");
-            const dropdown = document.querySelector(".dropdown");
+        function ShowUserFrequency() {
+            const users = JSON.parse(localStorage.getItem("RegistrationData")) || [];
 
-            if (activeUser) {
-                // Show user name
-                greeting.textContent = `Welcome, ${activeUser.firstName}!`;
-                if(activeUser.role === "admin"){
-                   greeting.textContent = `Welcome, ${activeUser.role.toUpperCase()}!`
-                }
-                // Hide login button
-                loginBtn.style.display = "none";
+            // Prepare UI elements
+            const genderList = document.getElementById("genderList");
+            const ageGroupList = document.getElementById("ageGroupList");
 
-                // Show dropdown
-                dropdown.style.display = "inline-block";
-            } else {
-                // Not logged in
-                greeting.textContent = "";
-
-                loginBtn.style.display = "inline-block";
-                dropdown.style.display = "none";
+            if (!users.length) {
+                genderList.innerHTML = "<li>No registered users found.</li>";
+                ageGroupList.innerHTML = "<li>No registered users found.</li>";
+                return;
             }
-        }
 
+            // --- GENDER FREQUENCY ---
+            let genderFreq = { Male: 0, Female: 0, Other: 0 };
 
-       function logout() {
-            localStorage.removeItem("ActiveUser");
-            alert("You have been logged out.");
-            window.location.reload();
-        }
+            users.forEach(u => {
+                const g = u.gender || "Other";
+                if (genderFreq[g] !== undefined) {
+                    genderFreq[g]++;
+                } else {
+                    genderFreq["Other"]++;
+                }
+            });
 
+            genderList.innerHTML = `
+                <li>Male: ${genderFreq.Male}</li>
+                <li>Female: ${genderFreq.Female}</li>
+                <li>Other: ${genderFreq.Other}</li>
+            `;
 
-
-       function ShowUserFrequency() {
-    const users = JSON.parse(localStorage.getItem("RegistrationData")) || [];
-
-    // Prepare UI elements
-    const genderList = document.getElementById("genderList");
-    const ageGroupList = document.getElementById("ageGroupList");
-
-    if (!users.length) {
-        genderList.innerHTML = "<li>No registered users found.</li>";
-        ageGroupList.innerHTML = "<li>No registered users found.</li>";
-        return;
-    }
-
-    // --- GENDER FREQUENCY ---
-    let genderFreq = { Male: 0, Female: 0, Other: 0 };
-
-    users.forEach(u => {
-        const g = u.gender || "Other";
-        if (genderFreq[g] !== undefined) {
-            genderFreq[g]++;
-        } else {
-            genderFreq["Other"]++;
-        }
-    });
-
-    genderList.innerHTML = `
-        <li>Male: ${genderFreq.Male}</li>
-        <li>Female: ${genderFreq.Female}</li>
-        <li>Other: ${genderFreq.Other}</li>
-    `;
-
-    let genderContainer = document.getElementById("genderBar");
+            let genderContainer = document.getElementById("genderBar");
             genderContainer.innerHTML = "";
             for (const gender in genderFreq) {
                 const barWidth = genderFreq[gender] * 20; // Scale factor for visibility
@@ -250,31 +220,9 @@
 
         }
 
-        function updateCartCount(count){
-        const cartCount = document.getElementById('cartCount');
-            
-        if(cartCount){
-                cartCount.textContent= count;
-
-                if(count === 0){
-                    cartCount.style.display = 'none';
-                    cartCount.classList.add = 'hidden';
-                }else{
-                    cartCount.style.display = 'block';
-                    cartCount.classList.remove = 'hidden';
-                }
-            }
-        }
-
-
-
         window.onload = function(){
             ShowUserFrequency();
-            updateCartCount(0);
         }
     </script>
 </body>
 </html>
-
-
-    
